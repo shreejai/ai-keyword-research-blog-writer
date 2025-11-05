@@ -39,7 +39,7 @@ const App = () => {
 // updates the response from the API
 // We show the updated response on our page
 return (
-    <div className="container">
+    <div className="chat-container w-full h-screen flex flex-col items-center justify-center gap-4">
       <div>
         <input
           type="text"

@@ -142,3 +142,17 @@
     @apply cursor-not-allowed;
   }
 }
+
+.chat-container button {
+  width: 100%;
+  padding: 1em;
+  background-color: #14151e;
+  color: #fff;
+  border: none;
+  border-radius: 0.25em;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
+  font-size: 1.2em;
+  box-shadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.1);
+}
+
