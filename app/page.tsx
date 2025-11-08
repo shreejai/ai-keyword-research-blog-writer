@@ -78,7 +78,7 @@ export default function Home() {
       <header className="border-b border-gray-200">
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-blue-600">
+            <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-black">
               <Sparkles className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -103,7 +103,7 @@ export default function Home() {
                   <div className="flex flex-col items-center flex-1">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${
-                        isActive ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-600"
+                        isActive ? "bg-black text-white" : "bg-gray-200 text-gray-600"
                       }`}
                     >
                       {index + 1}
@@ -115,7 +115,7 @@ export default function Home() {
                   {index < 3 && (
                     <div
                       className={`h-0.5 flex-1 -mt-8 transition-colors ${
-                        index < currentIndex ? "bg-blue-600" : "bg-gray-200"
+                        index < currentIndex ? "bg-black" : "bg-gray-200"
                       }`}
                     />
                   )}
@@ -166,7 +166,7 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={isGenerating}
-                className="w-full bg-blue-600 text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-black text-white font-medium py-2.5 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {isGenerating ? (
                   <>
