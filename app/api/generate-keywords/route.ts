@@ -1,26 +1,27 @@
-import { generateObject } from "ai"
-import { z } from "zod"
+import OpenAI from "openai"
 
-const keywordSchema = z.object({
-  keywords: z.array(
-    z.object({
-      persona: z.string().describe("The persona name"),
-      variations: z.array(z.string()).length(3).describe("3 different search query variations"),
-    }),
-  ),
-})
+const apiKey = process.env.OPENAI_API_KEY
+
+const openai = new OpenAI({ apiKey: apiKey })
 
 export async function POST(req: Request) {
-  const { personas, businessInfo } = await req.json()
+  try {
+    const { personas, businessInfo } = await req.json()
 
-  const personaDescriptions = personas
-    .map((p: any) => `${p.name} (${p.age}, ${p.occupation}): Goals - ${p.goals}. Pain Points - ${p.painPoints}`)
-    .join("\n\n")
+    const personaDescriptions = personas
+      .map((p: any) => `${p.name} (${p.age}, ${p.occupation}): Goals - ${p.goals}. Pain Points - ${p.painPoints}`)
+      .join("\n\n")
 
-  const { object } = await generateObject({
-    model: "openai/gpt-4o",
-    schema: keywordSchema,
-    prompt: `Given these customer personas for a ${businessInfo.businessType} in ${businessInfo.location}:
+    const response = await openai.chat.completions.create({
+      model: "gpt-4o",
+      messages: [
+        {
+          role: "system",
+          content: "You are a helpful assistant that generates keyword search queries in JSON format.",
+        },
+        {
+          role: "user",
+          content: `Given these customer personas for a ${businessInfo.businessType} in ${businessInfo.location}:
 
 ${personaDescriptions}
 
@@ -33,8 +34,30 @@ The search queries should:
 - Reflect the persona's goals and pain points
 - Use different phrasings and word choices
 
-Respond with 3 different search query variations for each persona.`,
-  })
+Respond with a JSON object with this structure:
+{
+  "keywords": [
+    {
+      "persona": "Persona Name",
+      "variations": ["query 1", "query 2", "query 3"]
+    }
+  ]
+}`,
+        },
+      ],
+      response_format: { type: "json_object" },
+    })
 
-  return Response.json(object)
+    const result = JSON.parse(response.choices[0].message.content || "{}")
+    return Response.json(result)
+  } catch (error: any) {
+    if (error?.status === 429) {
+      console.log("⚠️ Insufficient OpenAI quota - please check your plan and billing details")
+    } else {
+      console.log("OpenAI API error:", error?.message || error)
+    }
+    return new Response(JSON.stringify({ error: error?.message || "An error occurred" }), {
+      status: error?.status || 500,
+    })
+  }
 }
