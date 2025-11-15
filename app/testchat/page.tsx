@@ -39,19 +39,20 @@ const App = () => {
 // updates the response from the API
 // We show the updated response on our page
 return (
-    <div className="chat-container w-full h-screen flex flex-col items-center justify-center gap-4">
+    <div className="chat-container w-full h-screen flex flex-col items-center justify-center gap-4 bg-white dark:bg-gray-950">
       <div>
         <input
           type="text"
           value={value}
           onChange={onChange}
+          className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-700"
         ></input>
       </div>
       <div>
         <button onClick={handleSubmit}>Click me for answers!</button>
       </div>
       <div>
-        <p>Chatbot: {response}</p>
+        <p className="text-gray-900 dark:text-white">Chatbot: {response}</p>
       </div>
     </div>
   );
