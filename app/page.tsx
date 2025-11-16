@@ -81,8 +81,8 @@ export default function Home() {
         <div className="container mx-auto px-4 py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-black dark:bg-white">
-                <Sparkles className="w-5 h-5 text-white dark:text-black" />
+              <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-linear-to-r from-blue-500 via-purple-500 to-red-500">
+                <Sparkles className="w-5 h-5 text-white" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 dark:text-white">ContentAI</h1>
@@ -108,7 +108,7 @@ export default function Home() {
                   <div className="flex flex-col items-center flex-1">
                     <div
                       className={`w-10 h-10 rounded-full flex items-center justify-center font-semibold text-sm transition-colors ${
-                        isActive ? "bg-black dark:bg-white text-white dark:text-black" : "bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
+                        isActive ? "bg-linear-to-r from-blue-500 to-blue-900 text-white" : "bg-gray-200 dark:bg-gray-800 text-gray-600 dark:text-gray-400"
                       }`}
                     >
                       {index + 1}
