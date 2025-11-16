@@ -143,6 +143,30 @@
   }
 }
 
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient-button-rotate {
+  0% {
+    background-color: #222b80;
+  }
+  50% {
+    background-color: #236d5e;
+  }
+  100% {
+    background-color: #dc6f10;
+  }
+}
+
 .chat-container button {
   width: 100%;
   padding: 1em;

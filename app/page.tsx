@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { Sparkles } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { GradientButton } from "@/components/gradient-button"
 
 interface BusinessInfo {
   businessType: string
@@ -170,13 +171,13 @@ export default function Home() {
               <button
                 type="submit"
                 disabled={isGenerating}
-                className="w-full bg-black dark:bg-white text-white dark:text-black font-medium py-2.5 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                className="w-full bg-linear-to-r from-blue-500 via-purple-500 to-red-500 hover:bg-linear-to-r hover:from-blue-600 hover:via-purple-600 hover:to-red-500 group-hover:animate-[gradient-button-rotate_3s_linear_infinite] dark:bg-white text-white font-medium py-2.5 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-100 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
               >
                 {isGenerating ? (
-                  <>
+                  <div className="flex items-center justify-center gap-2">
                     <Sparkles className="w-4 h-4 animate-spin" />
                     Generating Personas...
-                  </>
+                  </div>
                 ) : (
                   <>
                     Generate Customer Personas
@@ -184,6 +185,10 @@ export default function Home() {
                   </>
                 )}
               </button>
+
+              {/* Test button */}
+              {/* <GradientButton href="#">Download</GradientButton> */}
+
             </form>
           </div>
         )}
