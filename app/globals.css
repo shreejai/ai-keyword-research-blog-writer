@@ -135,11 +135,35 @@
   input[type="email"],
   input[type="password"],
   textarea {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors;
+    @apply w-full px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder:text-gray-500 dark:placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors;
   }
 
   button:disabled {
     @apply cursor-not-allowed;
+  }
+}
+
+@keyframes gradient-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradient-button-rotate {
+  0% {
+    background-color: #222b80;
+  }
+  50% {
+    background-color: #236d5e;
+  }
+  100% {
+    background-color: #dc6f10;
   }
 }
 
@@ -155,4 +179,5 @@
   font-size: 1.2em;
   box-shadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.1);
 }
+
 
