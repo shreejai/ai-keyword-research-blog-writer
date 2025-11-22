@@ -25,7 +25,7 @@ export default function Home() {
         </div>
       </header>
 
-      {/* Main Content */}
+      {/* Main Content  */}
       <main className="flex-1 flex items-center justify-center px-4 py-12">
         <div className="text-center space-y-8 max-w-2xl">
           <div className="space-y-4">
