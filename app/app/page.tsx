@@ -297,6 +297,9 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
   const [topic, setTopic] = useState("")
   const [blogContent, setBlogContent] = useState("")
   const [isGenerating, setIsGenerating] = useState(false)
+  const [isGeneratingCaption, setIsGeneratingCaption] = useState(false)
+  const [caption, setCaption] = useState("")
+  const [hashtags, setHashtags] = useState<string[]>([])
 
   const allKeywords = keywords.flatMap((k) => k.variations)
 
@@ -304,6 +307,8 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
     e.preventDefault()
     setIsGenerating(true)
     setBlogContent("")
+    setCaption("")
+    setHashtags([])
 
     try {
       const response = await fetch("/api/generate-blog", {
@@ -328,6 +333,34 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
       console.error("Error generating blog:", error)
     } finally {
       setIsGenerating(false)
+    }
+  }
+
+  const handleGenerateCaption = async () => {
+    if (!blogContent && !topic) return
+
+    setIsGeneratingCaption(true)
+    setCaption("")
+    setHashtags([])
+
+    try {
+      const response = await fetch("/api/generate-caption", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          blogContent,
+          topic,
+          businessInfo,
+        }),
+      })
+
+      const data = await response.json()
+      setCaption(data.caption || "")
+      setHashtags(Array.isArray(data.hashtags) ? data.hashtags : [])
+    } catch (error) {
+      console.error("Error generating caption:", error)
+    } finally {
+      setIsGeneratingCaption(false)
     }
   }
 
@@ -388,9 +421,64 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
       </div>
 
       {blogContent && (
-        <div className="border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900 p-6">
-          <h3 className="font-bold text-gray-900 dark:text-white mb-4">Your Blog Post</h3>
-          <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">{blogContent}</div>
+        <div className="space-y-6">
+          <div className="border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900 p-6">
+            <h3 className="font-bold text-gray-900 dark:text-white mb-4">Your Blog Post</h3>
+            <div className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap">{blogContent}</div>
+          </div>
+
+          <div className="border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900 p-6 space-y-4">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <h3 className="font-bold text-gray-900 dark:text-white">Social Media Caption</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Generate a high-engagement caption and optimized hashtags for sharing this post on social media.
+                </p>
+              </div>
+              <button
+                onClick={handleGenerateCaption}
+                disabled={isGeneratingCaption}
+                className="w-full sm:w-auto bg-linear-to-r from-blue-500 via-purple-500 to-red-500 text-white font-medium px-4 py-2 rounded-lg hover:opacity-90 disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+              >
+                {isGeneratingCaption ? (
+                  <>
+                    <Sparkles className="w-4 h-4 animate-spin" />
+                    Generating Caption...
+                  </>
+                ) : (
+                  <>
+                    Generate Social Caption
+                    <Sparkles className="w-4 h-4" />
+                  </>
+                )}
+              </button>
+            </div>
+
+            {caption && (
+              <div className="space-y-3">
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Caption</h4>
+                  <p className="text-gray-700 dark:text-gray-300 whitespace-pre-wrap">{caption}</p>
+                </div>
+
+                {hashtags.length > 0 && (
+                  <div>
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Hashtags</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {hashtags.map((tag, index) => (
+                        <span
+                          key={index}
+                          className="px-3 py-1.5 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-md text-sm font-medium"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       )}
     </div>
