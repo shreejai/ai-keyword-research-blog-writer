@@ -24,14 +24,14 @@
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tw-animate-css": "latest",
-    "zod": "3.25.76"
+    "zod": "3.25.76",
+    "lightningcss": "^1.28.1"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.1.9",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
-    "lightningcss": "^1.28.1",
     "postcss": "^8.5",
     "tailwindcss": "^4.1.9",
     "typescript": "^5"
