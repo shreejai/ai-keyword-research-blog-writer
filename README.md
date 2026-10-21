@@ -48,7 +48,11 @@ Create a `.env.local` file in the project root (if it does not already exist) an
 
 ```bash
 OPENAI_API_KEY=your_openai_api_key_here
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
 ```
+
+Authentication uses [Clerk](https://clerk.com) (free tier). Create an application in the Clerk dashboard and copy its keys from **API Keys**.
 
 This key is used by:
 

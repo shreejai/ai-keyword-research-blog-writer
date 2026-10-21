@@ -1,4 +1,5 @@
 import OpenAI from "openai"
+import { openAIErrorResponse } from "@/lib/openai-error"
 
 const apiKey = process.env.OPENAI_API_KEY
 
@@ -68,13 +69,6 @@ Format the blog post with proper structure including title, introduction, body s
       },
     })
   } catch (error: any) {
-    if (error?.status === 429) {
-      console.log("⚠️ Insufficient OpenAI quota - please check your plan and billing details")
-    } else {
-      console.log("OpenAI API error:", error?.message || error)
-    }
-    return new Response(JSON.stringify({ error: error?.message || "An error occurred" }), {
-      status: error?.status || 500,
-    })
+    return openAIErrorResponse(error, "blog")
   }
 }

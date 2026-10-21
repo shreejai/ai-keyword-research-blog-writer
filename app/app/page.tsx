@@ -3,7 +3,8 @@
 import type React from "react"
 
 import { useState } from "react"
-import { Sparkles } from "lucide-react"
+import { AlertCircle, Sparkles } from "lucide-react"
+import { UserButton } from "@clerk/nextjs"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { GradientButton } from "@/components/gradient-button"
 
@@ -26,16 +27,38 @@ interface Keyword {
   variations: string[]
 }
 
+const GENERIC_ERROR = "Something went wrong. Please try again."
+
+async function getErrorMessage(response: Response) {
+  try {
+    const data = await response.json()
+    return data.error || GENERIC_ERROR
+  } catch {
+    return GENERIC_ERROR
+  }
+}
+
+function ErrorAlert({ message }: { message: string }) {
+  return (
+    <div role="alert" className="mb-6 flex items-start gap-3 rounded-lg border border-red-200 dark:border-red-500/20 bg-red-50 dark:bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-400">
+      <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+      <p>{message}</p>
+    </div>
+  )
+}
+
 export default function Home() {
   const [step, setStep] = useState<"business" | "personas" | "keywords" | "blog">("business")
   const [businessInfo, setBusinessInfo] = useState<BusinessInfo>({ businessType: "", location: "" })
   const [personas, setPersonas] = useState<Persona[]>([])
   const [keywords, setKeywords] = useState<Keyword[]>([])
   const [isGenerating, setIsGenerating] = useState(false)
+  const [error, setError] = useState("")
 
   const handleBusinessSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsGenerating(true)
+    setError("")
 
     try {
       const response = await fetch("/api/generate-personas", {
@@ -44,11 +67,17 @@ export default function Home() {
         body: JSON.stringify(businessInfo),
       })
 
+      if (!response.ok) {
+        setError(await getErrorMessage(response))
+        return
+      }
+
       const data = await response.json()
-      setPersonas(data.personas)
+      setPersonas(data.personas ?? [])
       setStep("personas")
     } catch (error) {
       console.error("Error generating personas:", error)
+      setError(GENERIC_ERROR)
     } finally {
       setIsGenerating(false)
     }
@@ -56,6 +85,7 @@ export default function Home() {
 
   const handleGenerateKeywords = async () => {
     setIsGenerating(true)
+    setError("")
 
     try {
       const response = await fetch("/api/generate-keywords", {
@@ -64,11 +94,17 @@ export default function Home() {
         body: JSON.stringify({ personas, businessInfo }),
       })
 
+      if (!response.ok) {
+        setError(await getErrorMessage(response))
+        return
+      }
+
       const data = await response.json()
-      setKeywords(data.keywords)
+      setKeywords(data.keywords ?? [])
       setStep("keywords")
     } catch (error) {
       console.error("Error generating keywords:", error)
+      setError(GENERIC_ERROR)
     } finally {
       setIsGenerating(false)
     }
@@ -89,7 +125,10 @@ export default function Home() {
                 <p className="text-sm text-gray-600 dark:text-gray-400">Keyword Research & Blog Writer</p>
               </div>
             </div>
-            <ThemeToggle />
+            <div className="flex items-center gap-4">
+              <ThemeToggle />
+              <UserButton />
+            </div>
           </div>
         </div>
       </header>
@@ -129,6 +168,8 @@ export default function Home() {
             })}
           </div>
         </div>
+
+        {error && <ErrorAlert message={error} />}
 
         {/* Step 1: Business Info Form */}
         {step === "business" && (
@@ -300,6 +341,7 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
   const [isGeneratingCaption, setIsGeneratingCaption] = useState(false)
   const [caption, setCaption] = useState("")
   const [hashtags, setHashtags] = useState<string[]>([])
+  const [error, setError] = useState("")
 
   const allKeywords = keywords.flatMap((k) => k.variations)
 
@@ -309,6 +351,7 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
     setBlogContent("")
     setCaption("")
     setHashtags([])
+    setError("")
 
     try {
       const response = await fetch("/api/generate-blog", {
@@ -316,6 +359,11 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic, keywords: allKeywords, businessInfo }),
       })
+
+      if (!response.ok) {
+        setError(await getErrorMessage(response))
+        return
+      }
 
       const reader = response.body?.getReader()
       const decoder = new TextDecoder()
@@ -331,6 +379,7 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
       }
     } catch (error) {
       console.error("Error generating blog:", error)
+      setError(GENERIC_ERROR)
     } finally {
       setIsGenerating(false)
     }
@@ -342,6 +391,7 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
     setIsGeneratingCaption(true)
     setCaption("")
     setHashtags([])
+    setError("")
 
     try {
       const response = await fetch("/api/generate-caption", {
@@ -354,11 +404,17 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
         }),
       })
 
+      if (!response.ok) {
+        setError(await getErrorMessage(response))
+        return
+      }
+
       const data = await response.json()
       setCaption(data.caption || "")
       setHashtags(Array.isArray(data.hashtags) ? data.hashtags : [])
     } catch (error) {
       console.error("Error generating caption:", error)
+      setError(GENERIC_ERROR)
     } finally {
       setIsGeneratingCaption(false)
     }
@@ -370,6 +426,8 @@ function BlogWriter({ keywords, businessInfo }: { keywords: Keyword[]; businessI
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">Blog Writer</h2>
         <p className="text-gray-600 dark:text-gray-400">Create SEO-optimized blog content using your researched keywords</p>
       </div>
+
+      {error && <ErrorAlert message={error} />}
 
       <div className="border border-gray-200 dark:border-gray-800 rounded-lg bg-white dark:bg-gray-900 p-6">
         <h3 className="font-bold text-gray-900 dark:text-white mb-2">Your Keywords</h3>
