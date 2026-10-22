@@ -29,7 +29,7 @@ export default function LandingPage() {
               Sign in
             </Link>
             <Link
-              href="/login"
+              href="/sign-up"
               className="text-sm font-medium bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 transition-colors"
             >
               Get Started
@@ -62,7 +62,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
               <Link
-                href="/login"
+                href="/sign-up"
                 className="w-full sm:w-auto h-12 px-8 rounded-full bg-white text-black font-semibold flex items-center justify-center gap-2 hover:bg-gray-200 transition-all"
               >
                 Start Writing for Free <ArrowRight className="w-4 h-4" />
